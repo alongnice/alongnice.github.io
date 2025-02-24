@@ -1,4 +1,250 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>阿龙种树</title><description>全栈放</description><link>https://fuwari.vercel.app/</link><language>zh_CN</language><item><title>客户端到服务端边界</title><link>https://fuwari.vercel.app/posts/%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%88%B0%E6%9C%8D%E5%8A%A1%E7%AB%AF%E8%BE%B9%E7%95%8C/%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%88%B0%E6%9C%8D%E5%8A%A1%E7%AB%AF%E8%BE%B9%E7%95%8C/</link><guid isPermaLink="true">https://fuwari.vercel.app/posts/%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%88%B0%E6%9C%8D%E5%8A%A1%E7%AB%AF%E8%BE%B9%E7%95%8C/%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%88%B0%E6%9C%8D%E5%8A%A1%E7%AB%AF%E8%BE%B9%E7%95%8C/</guid><description>从一个url链接点击下去，到到达服务端边界之间的所有事情</description><pubDate>Tue, 29 Oct 2024 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>阿龙种树</title><description>全栈放</description><link>https://fuwari.vercel.app/</link><language>zh_CN</language><item><title>串口通讯开发排错实录</title><link>https://fuwari.vercel.app/posts/%E4%B8%B2%E5%8F%A3%E9%80%9A%E8%AE%AF%E5%BC%80%E5%8F%91%E6%8E%92%E9%94%99%E5%AE%9E%E5%BD%95/%E4%B8%B2%E5%8F%A3%E9%80%9A%E8%AE%AF%E5%BC%80%E5%8F%91%E6%8E%92%E9%94%99%E5%AE%9E%E5%BD%95/</link><guid isPermaLink="true">https://fuwari.vercel.app/posts/%E4%B8%B2%E5%8F%A3%E9%80%9A%E8%AE%AF%E5%BC%80%E5%8F%91%E6%8E%92%E9%94%99%E5%AE%9E%E5%BD%95/%E4%B8%B2%E5%8F%A3%E9%80%9A%E8%AE%AF%E5%BC%80%E5%8F%91%E6%8E%92%E9%94%99%E5%AE%9E%E5%BD%95/</guid><pubDate>Mon, 24 Feb 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Cover image source: &lt;a href=&quot;image.png&quot;&gt;alt text&lt;/a&gt;&lt;/p&gt;
+&lt;h1&gt;记录一下关于 &lt;code&gt;rs485&lt;/code&gt;协议开发灵巧手遇到的所有问题&lt;/h1&gt;
+&lt;h1&gt;1. 验证灵巧手是否通电&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li&gt;通电后左手大拇指根部,机械结构缝隙露出红光或者绿光证明通电成功&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1&gt;2. 验证灵巧手能接收到内容&lt;/h1&gt;
+&lt;p&gt;首先我们要确定我们能发送出去内容
+## 2.1. 验证我们可以发出rs485的内容
+从设备出口出发 我们需要知道 转接器是否能够发送出去内容&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;硬件接线是 A对A B对B 确定颜色就好&lt;/li&gt;
+&lt;li&gt;对于机器人 来说 黄A 蓝B 黑或棕接地&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RS485 通信是通过两根信号线的高低电平差来读取内容 这意味着不能通过短接AB来看数据是否发送&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这里我想到的思路是&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;USB-&amp;gt;RS485 -------------------&amp;gt;&amp;gt;&amp;gt;&amp;gt;&amp;gt;-----------------RS485-&amp;gt;USB
+此处的2个USB都连在一个电脑上, 开启两个串口
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;RS485 通信时 双向半双工的 依次确定能否发送数据   避免转接器的问题导致后续问题不方便排查&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;[!NOTE]
+小贴士: 一般情况(不绝对)下,转接器会发送和接收内容,会有不同的闪光,也可以辅助查看数据的通信情况&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;2.2. 驱动问题&lt;/h2&gt;
+&lt;p&gt;关于转接器, 我们还需要考虑驱动问题, 不见得所有的设备都只是用 ch340 或者 ch341 就能对串口进行操作
+注意查看转接器包装是否提供了 驱动下载链接
+也可以直接导致 &lt;em&gt;数据不能发送&lt;/em&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;blockquote&gt;
+&lt;p&gt;至此, 硬件连接问题解决, 驱动问题解决,下一步验证灵巧手能否响应内容&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr /&gt;
+&lt;h2&gt;2.3 win平台下上位机使用 或 调用串口&lt;/h2&gt;
+&lt;p&gt;灵巧手提供了开发的上位机程序,值得注意的是,&lt;em&gt;串口在同一时间通常只能被一个进程打开&lt;/em&gt;,意味着其他串口工具和通信方式要关闭
+在没有阅读 参数列表的时候 建议使用上位机控制 避免特殊符号或者误触导致的 无响应
+&lt;img src=&quot;./%E4%B8%8A%E4%BD%8D%E6%9C%BA%E5%9B%BE%E7%89%87.png&quot; alt=&quot;上位机图片&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;这里非常建议使用 可以拉去左侧进度条 或者 传感器标准(使用前记得连接搜索)
+或者按照文档 串口发送内容
+EB 90 01 04 12 F1 03 01 0C
+这个校准期间 尽量不要接触 灵巧手&lt;/p&gt;
+&lt;hr /&gt;
+&lt;blockquote&gt;
+&lt;p&gt;至此 我们证明了灵巧手的响应没有问题了&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr /&gt;
+&lt;h1&gt;3. 如何利用工控机操作RS485串口&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;linux 上一切内容皆文件, rs485 也将映射到 文件中 一般考虑如下几个文件 &lt;code&gt;/dev/ttyS0~5&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;这里主要看 ttyS0 和 ttyS1&lt;/li&gt;
+&lt;li&gt;众所周知, /dev 目录下很多文件 都是字符设备映射文件 跟普通的文件操作上略有不同&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;3.1. 如何证明我们对串口发送了数据呢 ?&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;	sudo cat /proc/tty/drive/serial
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这个命令会记录这个串口 发送和接受的数据
+&lt;img src=&quot;%E4%B8%B2%E5%8F%A3%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1.png&quot; alt=&quot;串口数据统计&quot; /&gt;
+每次尝试发送后 查看tx后面的数值是否发生变化&lt;/p&gt;
+&lt;h2&gt;3.2. 如何给这个串口发送数据呢?&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;串口的字符文件描述符有如下特点&lt;/li&gt;
+&lt;li&gt;丰富的标志位需要设置,下面会提到&lt;/li&gt;
+&lt;li&gt;这些标志位每次重启后,都会丢失会被初始化为原本的样子,需要设置&lt;/li&gt;
+&lt;li&gt;我们发送内容也应当注意 波特率 数据位 停止位 完整性校验方法等&lt;/li&gt;
+&lt;li&gt;字符设备的操作区别于普通文件, 他不具备缓冲区, 是以流的方式运行的,只能存储单个字符
+&lt;ul&gt;
+&lt;li&gt;而不是所有操作工具 都有针对这种场景适配 因此一些基础工具可能不太好用&lt;/li&gt;
+&lt;li&gt;这里的字符设备 要注意跟上面的串口一样 也具备一些独占的属性&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3.2.1. 有哪些参数需要预设呢?&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;  stty -F /dev/ttyS1 115200 cs8 -parenb  -cstopb  -ixon -ixoff
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;具体参数内容,没有细察,可以后期补充,项目紧急草草过下&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;如果后需要代码开发,系统编程提供了合适的内容支持&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;3.2.2. 发送数据&lt;/h3&gt;
+&lt;p&gt;建议使用 工具 screen&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;先说说怎么退出,这个程序的退出比较复杂,类似 vim , 如果没有正常退出释放字符设备,就会被独占不能操作
+&lt;ul&gt;
+&lt;li&gt;首先  ctrl+a 进入命令模式 然后 &lt;code&gt;:quit&lt;/code&gt; 输入命令 就可以退出了&lt;/li&gt;
+&lt;li&gt;如果不小心命令行被关掉或者其他方式关掉, 这个进程可能还会保留在后台不会死&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;screen -ls&lt;/code&gt;  查看存活的内容&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;screen -X -S &amp;lt;session_id&amp;gt; quit&lt;/code&gt;  这里id 替换成 上面查到的4~5位的数字id就好&lt;/li&gt;
+&lt;li&gt;可以再次查看存活状态&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;下面正式开始 怎么打开这个会话&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;screen /dev/ttyS1 &amp;lt;波特率&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;然后会出现一个黑框,你所有的键盘内容都会实时输入进去,没有回显&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;这里建议工控机和开发机器的网线和485通道都打开&lt;/li&gt;
+&lt;li&gt;也就是 网线保证 ssh 的信道通信&lt;/li&gt;
+&lt;li&gt;485 通道 在开发机器 打开UBS转485的串口 接收数据&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;如果说我们能够顺利的发送了数据, 开发机器的串口工具也准确的收到了内容,那么我们证明了 工控机的RS485 和 设备挂载是没有问题的
+关于接收到的内容 输入的内容会默认为字符串 会被转换成ASCII码  然后会转为16进制内容  也就是说&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;如果 发送键盘上的 0  对面是 0x30&lt;/li&gt;
+&lt;li&gt;发送1 对应 0x31&lt;/li&gt;
+&lt;li&gt;发送A 对应 0x41   -&amp;gt; 也就是65&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;然后也可以给工控机发送数据   内容会直接打印出来  应该是自动有做转码处理  会直接输出明文&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;[!CAUTION]
+如果是乱码,记得详细查看 A对A  B对B  不要接反&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr /&gt;
+&lt;p&gt;总结一下 我们验证了 如下内容&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;开发机器的串口发送能力&lt;/li&gt;
+&lt;li&gt;USB转RS485 的设备健康&lt;/li&gt;
+&lt;li&gt;机器手的接收和发送能力&lt;/li&gt;
+&lt;li&gt;机器手的动作能力&lt;/li&gt;
+&lt;li&gt;工控机的串口发送能力和接收能力
+&lt;img src=&quot;./%E7%81%B5%E5%B7%A7%E6%89%8B%E9%80%9A%E4%BF%A1.png&quot; alt=&quot;灵巧手通信&quot; /&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr /&gt;
+&lt;h1&gt;4. 是否发送?发送了什么?&lt;/h1&gt;
+&lt;p&gt;针对3.1章节 我们有提到 我们确定自己发送了数据,但是这仅仅是针对于发送方.
+假设我们跳过了前面的部分,在此处发送内容依旧可以显示内容? 但是如何证明 如下几点:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;我发送的东西有通过线路出去了呢(前面提到USB转RS485转接器可以依稀看到)&lt;/li&gt;
+&lt;li&gt;我们发送出去的内容是我们原本的意思吗? 会不会字符串转了ascii码或者以错误的格式发送了出去&lt;/li&gt;
+&lt;li&gt;有些上位机的功能 我不知道怎么实现的 我能不能知道上位机发送了哪些东西 &lt;s&gt;抄&lt;/s&gt;借鉴一下&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;4.1. 理解通信场景&lt;/h2&gt;
+&lt;p&gt;目前来看, 我们的开发目的是单线通信的方式,有什么内容的对话只有工控机和灵巧手之间知道.
+而且对于工控机(这里pc也一样)来说串口这个东西将会被独占,不方便(也许系统调用或者ebpf可以)从软件层面进行监控.
+那么我们从硬件层面考虑,将其中的硬件通信构建一个广场,让他们之间的对话完全成为一个公开的内容&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;[!CAUTION]
+这里的全部操作断电操作&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;首先我们将pc端的转接口A对准工控机的接口A,对应的B对应B&lt;/li&gt;
+&lt;li&gt;然后对连接的电线 开环- 将其中一部分的塑料皮剥开 然后将灵巧手的信号线并联上 注意! 依旧是A对A B对B
+线路连接 大致如下
+&lt;img src=&quot;%E5%B9%BF%E5%9C%BA%E9%80%9A%E8%AE%AF.png&quot; alt=&quot;广场通讯&quot; /&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;如此一来,我们能将得到一个广播广场,效果如下&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;PC上位机发送的所有内容 + 灵巧手给的响应 工控机都可以监听到(不过上位机发送内容超级频繁,需要使用过滤工具)&lt;/li&gt;
+&lt;li&gt;工控机发送的所有内容 + 灵巧手的响应 PC都可以通过串口调试工具监听到&lt;/li&gt;
+&lt;li&gt;工控机给了错误的指令 导致灵巧手故障 上位机可以快速清理故障以及复位&lt;/li&gt;
+&lt;li&gt;因为任何原因导致 工控机的参数 实质上没有对外发送 也可以看到&lt;/li&gt;
+&lt;li&gt;串口调试助手可以快速 试验 命令帧&lt;/li&gt;
+&lt;li&gt;避免了频繁的接线问题&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;4.2 新场景是否引入了问题&lt;/h2&gt;
+&lt;p&gt;目前来看,新的通信方式更多的是带来优势.
+但是引入了一些小问题 以及对于一些已有问题,我们更加清晰&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;对于单个发送端也就是单个pc或者工控机而言, 串口是独占的, 在软件层面, 但是我们开发的过程如果无意多开或冲突会引发什么问题呢
+&lt;ul&gt;
+&lt;li&gt;基本无法预知.&lt;/li&gt;
+&lt;li&gt;对于pc,我们无需过多关注 串口工具和上位机的无法连接,会提醒我们&lt;/li&gt;
+&lt;li&gt;对于工控机,我开发了一个小脚本,用来自动清理冗余进程的小脚本&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;#!/bin/bash
+
+# 检查是否以 root 用户运行
+if [ &quot;$EUID&quot; -ne 0 ]; then
+  echo &quot;请以 root 用户运行此脚本。&quot;
+  exit 1
+fi
+
+# 获取占用 /dev/ttyS1 的所有进程 ID
+pids=$(sudo lsof /dev/ttyS1 | awk &apos;NR&amp;gt;1 {print $2}&apos;)
+
+# 如果没有进程占用，则退出
+if [ -z &quot;$pids&quot; ]; then
+  echo &quot;没有进程占用 /dev/ttyS1。&quot;
+  exit 0
+fi
+
+# 杀死所有相关进程
+echo &quot;正在杀死以下进程：&quot;
+echo &quot;$pids&quot;
+kill -9 $pids
+
+# 检查是否成功
+if [ $? -eq 0 ]; then
+  echo &quot;所有占用 /dev/ttyS1 的进程已成功终止。&quot;
+else
+  echo &quot;终止进程时出错。&quot;
+  exit 1
+fi
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;对于pc和工控机的使用场景, 这句话可以改为 “通常情况下，应避免 PC 上位机和工控机同时向灵巧手发送指令，&lt;strong&gt;除非在排错过程中&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;4.3 如何通过pc串口工具监听通信呢?&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;%E5%B9%BF%E6%92%AD.png&quot; alt=&quot;广播.png&quot; /&gt;
+这里写了个受力传感器的例子&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;被ssh连接工控机发送指令后 灵巧手会有2个响应 一个立即响应开启动作 另一个动作完成&lt;/li&gt;
+&lt;li&gt;从串口调试助手这边来看 接收到 看似2条指令
+&lt;ol&gt;
+&lt;li&gt;第一条略长 因为对于pc来说 工控机发送和灵巧手的响应 都是接收者&lt;/li&gt;
+&lt;li&gt;第二条略短 是灵巧手的动作完成响应&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;这里由于是连续的 个人建议 通过串口调试工具的过滤功能分段&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;直接搜索 90 EB 这里是 接收包的包头 那么此处之前的内容 就是发送方的内容
+如果使用串口快速测试一下帧内容 则可以
+&lt;img src=&quot;%E4%B8%B2%E5%8F%A3%E9%80%9A%E8%AE%AF.png&quot; alt=&quot;串口通讯&quot; /&gt;
+更清晰的区分发送方和接收方&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;如何通过PC工控机监听上位机通讯?&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;cat /dev/ttyS1 | od -t x1 -v
+...
+0714220 94 06 04 03 fe 06 a4 04 64 0b f2 ff ff ff 80 80
+0714240 fe ec ff ff ff ff 00 00 00 04 04 04 04 04 04 04
+0714260 04 04 04 04 04 04 04 04 04 04 04 24 24 24 24 24
+0714300 24 24 e0 e0 62 1e 22 bd eb 90 ff 04 11 0a 06 4e
+0714320 72 d8 c0 fe 66 ec 8c f0 fe 30 70 ff f8 ff 18 e0
+0714340 0e bc 0e 0c 07 e6 07 3e 06 36 6f f6 ff 8c 80 80
+0714360 80 ff ff 84 80 84 80 80 80 80 80 80 80 80 80 00
+0714400 80 80 00 80 00 00 80 00 00 03 02 02 02 02 06 20
+0714420 20 26 20 1e 24 a4 eb 90 ff 04 11 0a 06 4e 72 90
+0714440 eb 01 51 11 0a 06 e8 03 e7 03 e8 03 e6 03 e7 03
+0714460 dc 03 8f 00 99 00 a0 00 9f 00 08 00 a7 01 fe ff
+0714500 ff ff fe ff 0c 00 ff ff 00 00 fe ff ff ff fe ff
+0714520 00 00 ff ff 00 00 00 00 00 00 00 00 00 00 00 00
+0714540 00 00 00 00 00 00 00 00 02 02 02 02 02 06 20 20
+0714560 20 20 1e 20 a6 eb 90 ff 04 11 0a 06 4e 72 90 eb
+0714600 01 51 11 0a 06 e8 03 e7 03 e8 03 e6 03 e6 03 dc
+...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以通过列处理工具 全部导出 然后通过 eb 90 和 90 eb 关键字
+将命令的发送帧和接收帧 再可以通过自己针对功能的设定参数 进行二次过滤 即可&lt;/p&gt;
+</content:encoded></item><item><title>客户端到服务端边界</title><link>https://fuwari.vercel.app/posts/%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%88%B0%E6%9C%8D%E5%8A%A1%E7%AB%AF%E8%BE%B9%E7%95%8C/%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%88%B0%E6%9C%8D%E5%8A%A1%E7%AB%AF%E8%BE%B9%E7%95%8C/</link><guid isPermaLink="true">https://fuwari.vercel.app/posts/%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%88%B0%E6%9C%8D%E5%8A%A1%E7%AB%AF%E8%BE%B9%E7%95%8C/%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%88%B0%E6%9C%8D%E5%8A%A1%E7%AB%AF%E8%BE%B9%E7%95%8C/</guid><description>从一个url链接点击下去，到到达服务端边界之间的所有事情</description><pubDate>Tue, 29 Oct 2024 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Cover image source: &lt;a href=&quot;image.png&quot;&gt;alt text&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
 &lt;p&gt;前缀知识, TCP/IP协议&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h2&gt;DNS协议&lt;/h2&gt;
@@ -246,205 +492,4 @@ Client Random + Server Random + Pre-Master Secret
 &lt;li&gt;网络安全实践指南&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/blockquote&gt;
-</content:encoded></item><item><title>本博客基本使用方法</title><link>https://fuwari.vercel.app/posts/guide/</link><guid isPermaLink="true">https://fuwari.vercel.app/posts/guide/</guid><description>如何使用这份模板？</description><pubDate>Sat, 19 Oct 2024 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Cover image source: &lt;a href=&quot;cover.jpg&quot;&gt;Source&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;此博客模板是由 &lt;a href=&quot;https://astro.build/&quot;&gt;Astro&lt;/a&gt;. 对于本指南中未提及的内容，您可能会在 &lt;a href=&quot;https://docs.astro.build/&quot;&gt;Astro Docs&lt;/a&gt;.&lt;/p&gt;
-&lt;h2&gt;帖子的前后&lt;/h2&gt;
-&lt;pre&gt;&lt;code&gt;---
-title: 我的第一篇博客文章
-published: 2024-09-09
-description: 这是我新的Astro博客的第一篇文章.
-image: ./cover.jpg
-tags: [Foo, Bar]
-category: Front-end
-draft: false
----
-&lt;/code&gt;&lt;/pre&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;标签&lt;/th&gt;
-&lt;th&gt;描述&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;code&gt;title&lt;/code&gt;&lt;/td&gt;
-&lt;td&gt;标题.&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;code&gt;published&lt;/code&gt;&lt;/td&gt;
-&lt;td&gt;发布日期.&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;code&gt;description&lt;/code&gt;&lt;/td&gt;
-&lt;td&gt;帖子的简短描述。显示在索引页面上.&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;code&gt;image&lt;/code&gt;&lt;/td&gt;
-&lt;td&gt;帖子的封面图像路径.&amp;lt;br/&amp;gt;1. 网络图片 &lt;code&gt;http://&lt;/code&gt; or &lt;code&gt;https://&lt;/code&gt;: &amp;lt;br/&amp;gt;2. 本地图片  &lt;code&gt;/&lt;/code&gt;: 在 &lt;code&gt;public&lt;/code&gt; 目录&amp;lt;br/&amp;gt;3. 没有前缀：相对于md文件&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;code&gt;tags&lt;/code&gt;&lt;/td&gt;
-&lt;td&gt;帖子的标签.&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;code&gt;category&lt;/code&gt;&lt;/td&gt;
-&lt;td&gt;帖子的类别.&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;code&gt;draft&lt;/code&gt;&lt;/td&gt;
-&lt;td&gt;如果这篇文章仍然是草稿，那将不会显示.&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;h2&gt;在哪里放置文件&lt;/h2&gt;
-&lt;p&gt;您的帖子文件应放置在&lt;code&gt;src/content/posts/&lt;/code&gt;目录中。您还可以创建子目录以更好地组织您的帖子和资产。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;src/content/posts/
-├── post-1.md
-└── post-2/
-    ├── cover.png
-    └── index.md
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;语法&lt;/h2&gt;
-&lt;p&gt;段落用空白行分开。&lt;/p&gt;
-&lt;p&gt;第二段。 &lt;em&gt;斜体&lt;/em&gt;，&lt;strong&gt;粗体&lt;/strong&gt;和 &lt;code&gt;单域&lt;/code&gt;。逐项列表
-看起来像：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;这个&lt;/li&gt;
-&lt;li&gt;那个&lt;/li&gt;
-&lt;li&gt;另一个&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;请注意 ---不考虑星号--- 实际文本
-内容从4个列开始。&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;块引号为
-像这样写。&lt;/p&gt;
-&lt;p&gt;它们可以跨越多个段落，
-如果您愿意。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;使用3个破折号进行EM仪表板。使用2个破折号进行范围（例如，“全部
-在第12--14章中）。三个点...将转换为省略号。支持Unicode。 ☺&lt;/p&gt;
-&lt;h2&gt;H2标头&lt;/h2&gt;
-&lt;p&gt;这是一个编号列表：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;第一项&lt;/li&gt;
-&lt;li&gt;第二项&lt;/li&gt;
-&lt;li&gt;第三项&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;再次注意实际文本如何以4列的4列开始（4个字符
-从左侧）。这是一个代码样本：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# Let me re-iterate ...
-for i in 1 .. 10 { do-something(i) }
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;正如您可能猜到的那样，缩进了4个空间。顺便说一句，而不是
-缩进块，如果您愿意，可以使用划界块：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;define foobar() {
-    print &quot;Welcome to flavor country!&quot;;
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;（这使复制和粘贴更容易）。您可以选择标记
-pandoc的划界块以语法强调了它：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;import time
-# Quick, count to ten!
-for i in range(10):
-    # (but not *too* quick)
-    time.sleep(0.5)
-    print i
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;H3标头&lt;/h3&gt;
-&lt;p&gt;现在一个嵌套列表：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;首先，获取这些成分：&lt;/li&gt;
-&lt;/ol&gt;
-&lt;ul&gt;
-&lt;li&gt;胡萝卜&lt;/li&gt;
-&lt;li&gt;芹菜&lt;/li&gt;
-&lt;li&gt;小扁豆&lt;/li&gt;
-&lt;/ul&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;煮一些水。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;将所有东西都倾倒在锅中并跟随
-该算法：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt; find wooden spoon
- uncover pot
- stir
- cover pot
- balance wooden spoon precariously on pot handle
- wait 10 minutes
- goto first step (or shut off burner when done)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;不要撞木勺，否则会掉落。&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;再次注意文本如何始终在4空间凹痕上排队（包括
-最后一行继续上述项目3）。&lt;/p&gt;
-&lt;p&gt;这是&lt;a href=&quot;http://foo.bar&quot;&gt;网站&lt;/a&gt;，&lt;a href=&quot;localdoc.html&quot;&gt;localdoc&lt;/a&gt;的链接，以及&lt;a href=&quot;#%E8%AF%AD%E6%B3%95&quot;&gt;currentDoc中的一个部分&lt;/a&gt;。这是一个脚注  &lt;a href=&quot;%E8%84%9A%E6%B3%A8%E7%9A%84%E6%8F%8F%E8%BF%B0%E3%80%82&quot;&gt;^1&lt;/a&gt;.&lt;/p&gt;
-&lt;h1&gt;视频插入&lt;/h1&gt;
-&lt;p&gt;只需从YouTube或其他平台复制嵌入代码，然后将其粘贴到Markdown文件中。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;---
-title: Include Video in the Post
-published: 2023-10-19
-// ...
----
-
-&amp;lt;iframe width=&quot;100%&quot; height=&quot;468&quot; src=&quot;https://youtu.be/aB3R3O-Ak5Y?si=Q9rFt4GbWLAZ82jT&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allowfullscreen&amp;gt;&amp;lt;/iframe&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;YouTube&lt;/h2&gt;
-&lt;p&gt;&amp;lt;iframe width=&quot;800&quot; height=&quot;400&quot; src=&quot;https://www.youtube.com/embed/aB3R3O-Ak5Y?si=Q9rFt4GbWLAZ82jT&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share&quot; referrerpolicy=&quot;strict-origin-when-cross-origin&quot; allowfullscreen&amp;gt;&amp;lt;/iframe&amp;gt;&lt;/p&gt;
-&lt;h2&gt;Bilibili&lt;/h2&gt;
-&lt;p&gt;&amp;lt;iframe width=&quot;800&quot; height=&quot;500&quot;  src=&quot;//player.bilibili.com/player.html?isOutside=true&amp;amp;aid=1205434445&amp;amp;bvid=BV1gf421X771&amp;amp;cid=1566619993&amp;amp;p=1&quot; scrolling=&quot;no&quot; border=&quot;0&quot; frameborder=&quot;no&quot; framespacing=&quot;0&quot; allowfullscreen=&quot;true&quot;&amp;gt;&amp;lt;/iframe&amp;gt;&lt;/p&gt;
-&lt;blockquote&gt;&lt;/blockquote&gt;
-&lt;h1&gt;扩展语法&lt;/h1&gt;
-&lt;h2&gt;GitHub 代码库卡片&lt;/h2&gt;
-&lt;p&gt;您可以添加动态卡片，链接到 GitHub 代码库，页面加载时，代码库信息从 GitHub API 中获取。&lt;/p&gt;
-&lt;p&gt;::github{repo=&quot;alongnice/myddns&quot;}&lt;/p&gt;
-&lt;p&gt;使用代码 &lt;code&gt;::github{repo=&quot;&amp;lt;owner&amp;gt;/&amp;lt;repo&amp;gt;&quot;}&lt;/code&gt; 创建一个 GitHub 代码库卡片。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;::github{repo=&quot;saicaca/fuwari&quot;}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;警告框&lt;/h2&gt;
-&lt;p&gt;以下类型的警告框受到支持: &lt;code&gt;note&lt;/code&gt; &lt;code&gt;tip&lt;/code&gt; &lt;code&gt;important&lt;/code&gt; &lt;code&gt;warning&lt;/code&gt; &lt;code&gt;caution&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;:::note
-突出显示用户应考虑的信息，即使快速浏览。
-:::&lt;/p&gt;
-&lt;p&gt;:::tip
-可选信息，以帮助用户更成功。
-:::&lt;/p&gt;
-&lt;p&gt;:::important
-至关重要的信息，对于用户成功至关重要。
-:::&lt;/p&gt;
-&lt;p&gt;:::warning
-由于潜在风险，需要立即引起用户注意的关键内容。
-:::&lt;/p&gt;
-&lt;p&gt;:::caution
-行动的负面潜在后果。
-:::&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::note
-突出显示用户应考虑的信息，即使快速浏览。
-:::
-
-:::tip
-可选信息，以帮助用户更成功。
-:::
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;警告框的标题可以自定义。&lt;/p&gt;
-&lt;p&gt;:::note[MY CUSTOM TITLE]
-这是一个带有自定义标题的提示。
-:::&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;:::note[MY CUSTOM TITLE]
-这是一个带有自定义标题的提示。
-:::
-&lt;/code&gt;&lt;/pre&gt;
-&lt;blockquote&gt;
-&lt;p&gt;[!TIP]
-&lt;a href=&quot;https://github.com/orgs/community/discussions/16925&quot;&gt; GitHub 语法&lt;/a&gt; 也支持.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;pre&gt;&lt;code&gt;&amp;gt; [!NOTE]
-&amp;gt; GitHub 语法也受支持。
-
-&amp;gt; [!TIP]
-&amp;gt; GitHub 语法也受支持。
-&lt;/code&gt;&lt;/pre&gt;
 </content:encoded></item></channel></rss>
