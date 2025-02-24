@@ -133,6 +133,13 @@ declare module 'astro:content' {
   collection: "posts";
   data: InferEntrySchema<"posts">
 } & { render(): Render[".md"] };
+"串口通讯开发排错实录/串口通讯开发排错实录.md": {
+	id: "串口通讯开发排错实录/串口通讯开发排错实录.md";
+  slug: "串口通讯开发排错实录/串口通讯开发排错实录";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
 "客户端到服务端边界/客户端到服务端边界.md": {
 	id: "客户端到服务端边界/客户端到服务端边界.md";
   slug: "客户端到服务端边界/客户端到服务端边界";
