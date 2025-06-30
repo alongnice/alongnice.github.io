@@ -147,6 +147,13 @@ declare module 'astro:content' {
   collection: "posts";
   data: InferEntrySchema<"posts">
 } & { render(): Render[".md"] };
+"当我们讨论慢时,我们在抵抗什么/当我们谈论慢时,我们在抵抗什么.md": {
+	id: "当我们讨论慢时,我们在抵抗什么/当我们谈论慢时,我们在抵抗什么.md";
+  slug: "当我们讨论慢时我们在抵抗什么/当我们谈论慢时我们在抵抗什么";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
 };
 "spec": {
 "about.md": {
