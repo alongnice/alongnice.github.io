@@ -1,10 +1,10 @@
 ---
 title: CPU飘高排查-深浅拷贝篇
-published: 2026-10-26
+published: 2026-03-11
 description: '从"某个版本之后 CPU 变高"开始, 用 /proc 切片、gdb 抓栈, 最后只改 4 行 const&'
 tags: ["性能排查", "perf", "gdb"]
 category: '工业开发'
-draft: true
+draft: false
 ---
 
 一台工业设备上的控制器进程, 静止状态下 CPU 就有 64.5%, 单核的六成多. 同型号但没挂外设的那台, 同样程序同样配置, 只有 6%~10%.
