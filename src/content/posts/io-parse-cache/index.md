@@ -1,10 +1,10 @@
 ---
 title: CPU飘高排查-解析缓存篇
-published: 2026-10-26
+published: 2026-04-15
 description: '上一篇收掉之后还剩四成: 每轮把同一份没变的 IO 描述重新解析一遍, 改成"文件不变就不解析"'
 tags: ["性能排查", "perf", "缓存"]
 category: '工业开发'
-draft: true
+draft: false
 ---
 
 上一篇([深浅拷贝篇](/posts/deep-copy-cpu-hotspot/))把那六成多的占用收掉了一半多, 静止态从 64.5% 降到 40% 上下.
