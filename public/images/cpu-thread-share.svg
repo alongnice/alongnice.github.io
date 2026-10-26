@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 190" width="760" height="190" role="img" aria-label="线程 CPU 占比">
+<text x="0" y="26" font-family="'Microsoft YaHei', 'PingFang SC', 'Noto Sans CJK SC', system-ui, sans-serif" font-size="15" fill="#8a8a8a">进程 CPU 的构成（pidstat 5 秒均值，单核百分比）</text>
+<rect x="0" y="62" width="651" height="52" rx="6" fill="#3b82f6" opacity="0.85"/>
+<rect x="651" y="62" width="49" height="52" rx="6" fill="#b0b0b0" opacity="0.5"/>
+<text x="16" y="94.0" font-family="'Microsoft YaHei', 'PingFang SC', 'Noto Sans CJK SC', system-ui, sans-serif" font-size="15" fill="#fff">一个未命名线程　60%　≈ 93%</text>
+<text x="708" y="94.0" font-family="'Microsoft YaHei', 'PingFang SC', 'Noto Sans CJK SC', system-ui, sans-serif" font-size="13" fill="#8a8a8a">其余</text>
+<text x="0" y="144" font-family="ui-monospace, 'JetBrains Mono', Consolas, monospace" font-size="13" fill="#8a8a8a">进程合计 64.5%（61% usr + 3% sys）　热点线程 60%　其余所有线程合计不到 4.5%</text>
+<text x="0" y="168" font-family="'Microsoft YaHei', 'PingFang SC', 'Noto Sans CJK SC', system-ui, sans-serif" font-size="13" fill="#8a8a8a">也就是说，一个线程吃掉了这台机器单核的六成，而它是匿名的。</text>
+</svg>

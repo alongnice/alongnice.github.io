@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 424" width="760" height="424" role="img" aria-label="定位路径">
+<text x="0" y="26" font-family="'Microsoft YaHei', 'PingFang SC', 'Noto Sans CJK SC', system-ui, sans-serif" font-size="15" fill="#8a8a8a">从「进程 CPU 高」到一行 getter：五步</text>
+<rect x="0" y="54" width="230" height="46" rx="8" fill="none" stroke="#b0b0b0" stroke-dasharray="4 3"/>
+<text x="14" y="82.0" font-family="'Microsoft YaHei', 'PingFang SC', 'Noto Sans CJK SC', system-ui, sans-serif" font-size="14" fill="#8a8a8a">1. 逐线程 stat 差分</text>
+<line x1="236" y1="77.0" x2="288" y2="77.0" stroke="#b0b0b0" stroke-width="1.5"/>
+<path d="M288 77.0 l-8 -4 v8 z" fill="#b0b0b0"/>
+<rect x="296" y="54" width="464" height="46" rx="8" fill="none" stroke="#3b82f6" opacity="0.55"/>
+<text x="312" y="82.0" font-family="'Microsoft YaHei', 'PingFang SC', 'Noto Sans CJK SC', system-ui, sans-serif" font-size="14" fill="#3b82f6">一个未命名线程 60%, 其余全部 &lt;3%</text>
+<rect x="0" y="126" width="230" height="46" rx="8" fill="none" stroke="#b0b0b0" stroke-dasharray="4 3"/>
+<text x="14" y="154.0" font-family="'Microsoft YaHei', 'PingFang SC', 'Noto Sans CJK SC', system-ui, sans-serif" font-size="14" fill="#8a8a8a">2. %sys / wchan / schedstat</text>
+<line x1="236" y1="149.0" x2="288" y2="149.0" stroke="#b0b0b0" stroke-width="1.5"/>
+<path d="M288 149.0 l-8 -4 v8 z" fill="#b0b0b0"/>
+<rect x="296" y="126" width="464" height="46" rx="8" fill="none" stroke="#3b82f6" opacity="0.55"/>
+<text x="312" y="154.0" font-family="'Microsoft YaHei', 'PingFang SC', 'Noto Sans CJK SC', system-ui, sans-serif" font-size="14" fill="#3b82f6">在算, 不是在等</text>
+<rect x="0" y="198" width="230" height="46" rx="8" fill="none" stroke="#b0b0b0" stroke-dasharray="4 3"/>
+<text x="14" y="226.0" font-family="'Microsoft YaHei', 'PingFang SC', 'Noto Sans CJK SC', system-ui, sans-serif" font-size="14" fill="#8a8a8a">3. 网络与日志线程排查</text>
+<line x1="236" y1="221.0" x2="288" y2="221.0" stroke="#b0b0b0" stroke-width="1.5"/>
+<path d="M288 221.0 l-8 -4 v8 z" fill="#b0b0b0"/>
+<rect x="296" y="198" width="464" height="46" rx="8" fill="none" stroke="#3b82f6" opacity="0.55"/>
+<text x="312" y="226.0" font-family="'Microsoft YaHei', 'PingFang SC', 'Noto Sans CJK SC', system-ui, sans-serif" font-size="14" fill="#3b82f6">不是轮询, 也不是写盘</text>
+<rect x="0" y="270" width="230" height="46" rx="8" fill="none" stroke="#b0b0b0" stroke-dasharray="4 3"/>
+<text x="14" y="298.0" font-family="'Microsoft YaHei', 'PingFang SC', 'Noto Sans CJK SC', system-ui, sans-serif" font-size="14" fill="#8a8a8a">4. gdb 连续抓栈</text>
+<line x1="236" y1="293.0" x2="288" y2="293.0" stroke="#b0b0b0" stroke-width="1.5"/>
+<path d="M288 293.0 l-8 -4 v8 z" fill="#b0b0b0"/>
+<rect x="296" y="270" width="464" height="46" rx="8" fill="none" stroke="#3b82f6" opacity="0.55"/>
+<text x="312" y="298.0" font-family="'Microsoft YaHei', 'PingFang SC', 'Noto Sans CJK SC', system-ui, sans-serif" font-size="14" fill="#3b82f6">栈全压在 vector&lt;IoPoint&gt; 的拷贝链上</text>
+<rect x="0" y="342" width="230" height="46" rx="8" fill="none" stroke="#b0b0b0" stroke-dasharray="4 3"/>
+<text x="14" y="370.0" font-family="'Microsoft YaHei', 'PingFang SC', 'Noto Sans CJK SC', system-ui, sans-serif" font-size="14" fill="#8a8a8a">5. 符号反查源码</text>
+<line x1="236" y1="365.0" x2="288" y2="365.0" stroke="#b0b0b0" stroke-width="1.5"/>
+<path d="M288 365.0 l-8 -4 v8 z" fill="#b0b0b0"/>
+<rect x="296" y="342" width="464" height="46" rx="8" fill="none" stroke="#3b82f6" opacity="0.55"/>
+<text x="312" y="370.0" font-family="'Microsoft YaHei', 'PingFang SC', 'Noto Sans CJK SC', system-ui, sans-serif" font-size="14" fill="#3b82f6">按值返回 + 内层 bit 循环 = 根因</text>
+</svg>
