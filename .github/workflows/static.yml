@@ -7,8 +7,18 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# 官方 Pages 部署走 OIDC，不需要任何 PAT/secret。
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -36,9 +46,23 @@ jobs:
       - name: List dist directory
         run: ls -la ./dist
 
-      - name: Deploy to GitHub Pages
-        if: github.event_name != 'pull_request'
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          personal_token: ${{ secrets.GH_PAT }}
-          publish_dir: ./dist
+          path: ./dist
+
+  deploy:
+    needs: build
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
