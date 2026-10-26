@@ -13,29 +13,22 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
+      # 版本取自 package.json 的 packageManager 字段（pnpm@9.6.0）。
+      # 原配置固定 pnpm 7，读不懂 lockfileVersion 9.0 的锁文件，
+      # 每次构建实际用的都不是锁定版本，依赖漂移后构建即失败。
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 7
+        uses: pnpm/action-setup@v4
 
       - name: Set up Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18.14.1
+          node-version: 22
           cache: 'pnpm'
 
-      - name: Cache pnpm store
-        uses: actions/cache@v3
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
-
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build
         run: pnpm build
@@ -44,7 +37,8 @@ jobs:
         run: ls -la ./dist
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        if: github.event_name != 'pull_request'
+        uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ secrets.GH_PAT }}
           publish_dir: ./dist
