@@ -1,10 +1,10 @@
 ---
 title: 从一帧串口数据说起：状态机的几种写法
-published: 2026-10-26
+published: 2026-10-28
 description: '帧解析为什么天然是个状态机, 以及 switch / 转移表 / 状态对象 / variant / 协程五种写法各自的边界'
 tags: ["串口通讯", "状态机", "C++"]
 category: '工业开发'
-draft: true
+draft: false
 ---
 
 写过[串口那篇](/posts/串口通讯开发排错实录/串口通讯开发排错实录/)之后, 有个东西一直没写: 帧是怎么"收完"的.
